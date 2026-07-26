@@ -13,7 +13,9 @@ CMakeFiles/
 cmake_install.cmake
 CTestTestfile.cmake
 Makefile
-*.cmake
+/CMakeCache.txt
+/cmake_install.cmake
+/CTestTestfile.cmake
 CMakeUserPresets.json
 CMakeSettings.json
 

@@ -18,16 +18,24 @@
 ## 构建
 
 ```powershell
-# 配置
-cmake --preset msvc-debug-all-vcpkg
+# 配置 (vcpkg 全自动模式)
+cmake -S . -B build/msvc-debug -G "Visual Studio 17 2022" `
+  -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" `
+  -DUSE_VCPKG_QT=ON -DUSE_VCPKG=ON
+
+# 配置 (官方 Qt + 手动 third_party)
+cmake -S . -B build/msvc-debug -G "Visual Studio 17 2022" `
+  -DCMAKE_PREFIX_PATH="$env:Qt6_DIR" `
+  -DUSE_VCPKG_QT=OFF -DUSE_VCPKG=OFF
 
 # 构建
-cmake --build build/msvc-debug-all-vcpkg --config Debug
+cmake --build build/msvc-debug --config Debug
+
+# 运行测试
+ctest --test-dir build/msvc-debug -C Debug
 ```
 
-完整构建指南见 [BUILD.md](BUILD.md)，IDE 配置见 [DEV_GUIDE.md](DEV_GUIDE.md)。
-
-AI 不自动执行构建命令。当用户请求构建时，提供命令供用户手动执行。
+> `CMakePresets.json` 不纳入版本控制。如需 preset 快捷方式，从 `CMakePresets.json.example` 复制后自行修改。上述纯指令方式无需 preset 即可工作。
 
 ## 代码风格
 

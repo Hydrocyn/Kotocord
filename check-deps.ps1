@@ -40,8 +40,8 @@ $total++; if ($hasWhisperModel) { $ok++; Write-Host "  [OK] Whisper model (ggml-
 Write-Host "-- Environment --" -ForegroundColor White
 $envVcpkg = [Environment]::GetEnvironmentVariable("VCPKG_ROOT", "User")
 $envQt6   = [Environment]::GetEnvironmentVariable("Qt6_DIR", "User")
-$total++; if ($envVcpkg) { $ok++; Write-Host "  [OK] VCPKG_ROOT (user env var)" -ForegroundColor Green } else { $miss++; Write-Host "  [--] VCPKG_ROOT (user env var) — setx VCPKG_ROOT ..." -ForegroundColor Yellow }
-$total++; if ($envQt6)   { $ok++; Write-Host "  [OK] Qt6_DIR (user env var)" -ForegroundColor Green } else { $miss++; Write-Host "  [--] Qt6_DIR (user env var) — setx Qt6_DIR ..." -ForegroundColor Yellow }
+$total++; if ($envVcpkg) { $ok++; Write-Host "  [OK] VCPKG_ROOT (user env var)" -ForegroundColor Green } else { $miss++; Write-Host "  [--] VCPKG_ROOT (user env var) -- setx VCPKG_ROOT ..." -ForegroundColor Yellow }
+$total++; if ($envQt6)   { $ok++; Write-Host "  [OK] Qt6_DIR (user env var)" -ForegroundColor Green } else { $miss++; Write-Host "  [--] Qt6_DIR (user env var) -- setx Qt6_DIR ..." -ForegroundColor Yellow }
 
 Write-Host ""
 if ($miss -eq 0) {

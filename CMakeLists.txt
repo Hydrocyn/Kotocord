@@ -134,6 +134,10 @@ set(UI_SOURCES
     src/ui/MainWindow.ui
 )
 
+set(RESOURCES
+    resources/resources.qrc
+)
+
 set(CORE_SOURCES
     src/main.cpp
     src/core/AppController.cpp
@@ -183,6 +187,7 @@ add_executable(${PROJECT_NAME}
     ${UI_SOURCES}
     ${MODULE_SOURCES}
     ${UTILS_SOURCES}
+    ${RESOURCES}
 )
 
 # ==========================================
@@ -346,6 +351,7 @@ target_precompile_headers(${PROJECT_NAME} PRIVATE
     <QTimer>
     <QJsonDocument>
     <QNetworkAccessManager>
+    <QNetworkReply>
 )
 
 # ==========================================
