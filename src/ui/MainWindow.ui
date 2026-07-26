@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+	<class>MainWindow</class>
+	<widget class="QMainWindow" name="MainWindow">
+		<property name="geometry">
+			<rect>
+				<x>0</x>
+				<y>0</y>
+				<width>480</width>
+				<height>550</height>
+			</rect>
+		</property>
+		<property name="windowTitle">
+			<string>Kotocord - 核心控制台</string>
+		</property>
+		<widget class="QWidget" name="centralwidget">
+			<layout class="QVBoxLayout" name="verticalLayout">
+
+				<item>
+					<widget class="QGroupBox" name="groupBoxInput">
+						<property name="title">
+							<string>手动字幕输入</string>
+						</property>
+						<layout class="QHBoxLayout" name="horizontalLayout">
+							<item>
+								<widget class="QLineEdit" name="inputBox">
+									<property name="placeholderText">
+										<string>在此输入文字，按回车发送...</string>
+									</property>
+								</widget>
+							</item>
+							<item>
+								<widget class="QPushButton" name="btnSend">
+									<property name="text">
+										<string>发送</string>
+									</property>
+								</widget>
+							</item>
+						</layout>
+					</widget>
+				</item>
+
+				<item>
+					<widget class="QGroupBox" name="groupBoxLLM">
+						<property name="title">
+							<string>AI 大脑设置 (LLM)</string>
+						</property>
+						<layout class="QFormLayout" name="formLayoutLLM">
+							<item row="0" column="0" colspan="2">
+								<widget class="QCheckBox" name="chkEnableLLM">
+									<property name="text">
+										<string>启用大模型情绪分析与颜文字</string>
+									</property>
+									<property name="checked">
+										<bool>true</bool>
+									</property>
+								</widget>
+							</item>
+							<item row="1" column="0">
+								<widget class="QLabel" name="labelModel">
+									<property name="text">
+										<string>当前模型:</string>
+									</property>
+								</widget>
+							</item>
+							<item row="1" column="1">
+								<widget class="QComboBox" name="comboModel">
+									<item>
+										<property name="text">
+											<string>虚拟测试模式 (MockLLM)</string>
+										</property>
+									</item>
+									<item>
+										<property name="text">
+											<string>DeepSeek V3 (云端)</string>
+										</property>
+									</item>
+								</widget>
+							</item>
+							<item row="2" column="0">
+								<widget class="QLabel" name="labelApiKey">
+									<property name="text">
+										<string>API Key:</string>
+									</property>
+								</widget>
+							</item>
+							<item row="2" column="1">
+								<widget class="QLineEdit" name="inputApiKey">
+									<property name="echoMode">
+										<enum>QLineEdit::Password</enum>
+									</property>
+									<property name="placeholderText">
+										<string>输入 sk-... (虚拟模式无需输入)</string>
+									</property>
+								</widget>
+							</item>
+						</layout>
+					</widget>
+				</item>
+
+				<item>
+					<widget class="QGroupBox" name="groupBoxMonitor">
+						<property name="title">
+							<string>状态与资源监控</string>
+						</property>
+						<layout class="QFormLayout" name="formLayoutMonitor">
+							<item row="0" column="0">
+								<widget class="QLabel" name="labelEmotionTitle">
+									<property name="text">
+										<string>当前判定情绪:</string>
+									</property>
+								</widget>
+							</item>
+							<item row="0" column="1">
+								<widget class="QLabel" name="lblCurrentEmotion">
+									<property name="text">
+										<string>等待分析...</string>
+									</property>
+									<property name="font">
+										<font>
+											<weight>75</weight>
+											<bold>true</bold>
+										</font>
+									</property>
+									<property name="styleSheet">
+										<string>color: #0078D7;</string>
+									</property>
+								</widget>
+							</item>
+							<item row="1" column="0">
+								<widget class="QLabel" name="labelLatencyTitle">
+									<property name="text">
+										<string>API 响应延迟:</string>
+									</property>
+								</widget>
+							</item>
+							<item row="1" column="1">
+								<widget class="QLabel" name="lblLatency">
+									<property name="text">
+										<string>0 ms</string>
+									</property>
+								</widget>
+							</item>
+							<item row="2" column="0">
+								<widget class="QLabel" name="labelTokenTitle">
+									<property name="text">
+										<string>单次 Token 消耗:</string>
+									</property>
+								</widget>
+							</item>
+							<item row="2" column="1">
+								<widget class="QLabel" name="lblTokens">
+									<property name="text">
+										<string>0 (提示: 0, 生成: 0)</string>
+									</property>
+								</widget>
+							</item>
+							<item row="3" column="0">
+								<widget class="QLabel" name="labelCpuTitle">
+									<property name="text">
+										<string>CPU 占用率:</string>
+									</property>
+								</widget>
+							</item>
+							<item row="3" column="1">
+								<widget class="QLabel" name="lblCpu">
+									<property name="text">
+										<string>0.00 %</string>
+									</property>
+									<property name="styleSheet">
+										<string>color: #D32F2F;</string>
+									</property>
+								</widget>
+							</item>
+							<item row="4" column="0">
+								<widget class="QLabel" name="labelMemTitle">
+									<property name="text">
+										<string>内存占用:</string>
+									</property>
+								</widget>
+							</item>
+							<item row="4" column="1">
+								<widget class="QLabel" name="lblMem">
+									<property name="text">
+										<string>0.00 MB</string>
+									</property>
+									<property name="styleSheet">
+										<string>color: #1976D2;</string>
+									</property>
+								</widget>
+							</item>
+						</layout>
+					</widget>
+				</item>
+
+				<item>
+					<widget class="QGroupBox" name="groupBoxASR">
+						<property name="title">
+							<string>语音识别设置 (ASR)</string>
+						</property>
+						<layout class="QVBoxLayout" name="verticalLayout_3">
+							<item>
+								<widget class="QCheckBox" name="chkEnableASR">
+									<property name="text">
+										<string>启用麦克风语音识别</string>
+									</property>
+								</widget>
+							</item>
+							<item>
+								<widget class="QRadioButton" name="radioVosk">
+									<property name="text">
+										<string>使用 Vosk (低延迟，适合游戏双开)</string>
+									</property>
+									<property name="checked">
+										<bool>true</bool>
+									</property>
+									<property name="enabled">
+										<bool>false</bool>
+									</property>
+								</widget>
+							</item>
+							<item>
+								<widget class="QRadioButton" name="radioWhisper">
+									<property name="text">
+										<string>使用 Whisper.cpp (高精度，吃性能)</string>
+									</property>
+									<property name="enabled">
+										<bool>false</bool>
+									</property>
+								</widget>
+							</item>
+						</layout>
+					</widget>
+				</item>
+
+				<item>
+					<spacer name="verticalSpacer">
+						<property name="orientation">
+							<enum>Qt::Vertical</enum>
+						</property>
+						<property name="sizeHint" stdset="0">
+							<size>
+								<width>20</width>
+								<height>40</height>
+							</size>
+						</property>
+					</spacer>
+				</item>
+			</layout>
+		</widget>
+	</widget>
+	<resources/>
+	<connections/>
+</ui>
