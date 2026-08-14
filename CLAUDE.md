@@ -12,30 +12,50 @@
 - **语言**：C++17
 - **UI 框架**：Qt 6 (Widgets + Multimedia)
 - **构建系统**：CMake 3.16+ + MSVC 2022
-- **包管理**：vcpkg（可选）+ 手动 third_party（可选），双模式可自由组合
+- **包管理**: vcpkg（whisper 等其他库）+ 手动 third_party（Vosk）；Qt6 由 MaintenanceTool 安装，环境变量定位
 - **测试框架**：Qt Test
 
 ## 构建
 
 ```powershell
-# 配置 (vcpkg 全自动模式)
-cmake -S . -B build/msvc-debug -G "Visual Studio 17 2022" `
-  -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" `
-  -DUSE_VCPKG_QT=ON -DUSE_VCPKG=ON
+# 本机 (Qt 6.9.3) — 用 CMakeUserPresets.json (已 gitignore, 内含绝对路径)
+cmake --preset msvc-debug     # configure: FetchContent 自动拉取 whisper.cpp
+cmake --build --preset debug
 
-# 配置 (官方 Qt + 手动 third_party)
-cmake -S . -B build/msvc-debug -G "Visual Studio 17 2022" `
-  -DCMAKE_PREFIX_PATH="$env:Qt6_DIR" `
-  -DUSE_VCPKG_QT=OFF -DUSE_VCPKG=OFF
+# 其他机器 — 复制 CMakePresets.json.example → CMakePresets.json
+#   Qt6 经 Qt6_DIR 环境变量或 CMAKE_PREFIX_PATH 定位
+#   whisper.cpp 经 FetchContent 自动拉取 (需网络)
+#   Vosk 需手动放置 third_party/vosk/ 预编译包
 
-# 构建
-cmake --build build/msvc-debug --config Debug
+# Qt DLL 部署 (Qt MaintenanceTool 安装模式)
+windeployqt bin/Debug/Kotocord.exe
 
 # 运行测试
 ctest --test-dir build/msvc-debug -C Debug
 ```
 
-> `CMakePresets.json` 不纳入版本控制。如需 preset 快捷方式，从 `CMakePresets.json.example` 复制后自行修改。上述纯指令方式无需 preset 即可工作。
+> Qt6 由 MaintenanceTool 管理，经 `CMAKE_PREFIX_PATH`（本机 preset）或 `Qt6_DIR` 环境变量（其他机器）定位。
+> whisper.cpp 经 FetchContent 静态链接（v1.7.5），无需 DLL 部署。
+> 此前 `USE_VCPKG_QT`/`USE_VCPKG` 双分支已于 2026-08-12 移除。
+
+## 资源迁移（二进制依赖）
+
+Vosk DLL/导入库与本地模型不进 git，通过打包/拆解脚本迁移：
+
+```powershell
+# 打包 (本机 → dist/kotocord-resources-<日期>.zip)
+.\pack-resources.ps1
+
+# 拆解安放 (新机器, 自动解压到仓库根 + 兜底生成导入库 + check-deps 验证)
+.\unpack-resources.ps1 dist\kotocord-resources-<日期>.zip
+```
+
+| 脚本 | 用途 |
+|------|------|
+| `check-deps.ps1` | 资源就位检查 |
+| `generate-vosk-import-lib.ps1` | 从 libvosk.dll 生成 MSVC 导入库 vosk.lib |
+| `pack-resources.ps1` | 打包未跟踪二进制资源 |
+| `unpack-resources.ps1` | 拆解资源包 + 验证 |
 
 ## 代码风格
 

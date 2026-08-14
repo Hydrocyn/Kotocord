@@ -4,110 +4,40 @@
         " CMakePresets.json 模板 — 复制为 CMakePresets.json 即可使用",
         "",
         " 本文件不包含任何机器相关的绝对路径。",
-        " 所有路径通过环境变量注入, 你可以永久设置它们:",
+        " 本机个人配置请用 CMakeUserPresets.json (已 gitignore, 可写绝对路径)。",
         "",
-        "   setx VCPKG_ROOT \"C:\\vcpkg\"              ← vcpkg 安装目录",
-        "   setx Qt6_DIR   \"C:\\Qt\\6.5.0\\msvc2019_64\"  ← Qt6 安装目录 (手动 Qt 时需要)",
+        " Qt6 通过 MaintenanceTool 安装, 由 CMAKE_PREFIX_PATH 或 Qt6_DIR 定位:",
+        "   $env:Qt6_DIR = \"C:\\Qt\\6.9.3\\msvc2022_64\\lib\\cmake\\Qt6\"",
         "",
-        " 临时设置 (仅当前终端):",
-        "   $env:VCPKG_ROOT = \"C:\\vcpkg\"",
-        "   $env:Qt6_DIR    = \"C:\\Qt\\6.5.0\\msvc2019_64\"",
-        "",
-        " 预设说明:",
-        "   all-vcpkg  = Qt6 和 whisper 全部由 vcpkg 管理 (全新 PC 首选)",
-        "   all-manual = Qt6 和 whisper 全部手动 (官方 Qt + third_party)",
-        "   qt-manual-whisper-vcpkg = 官方 Qt, whisper 交给 vcpkg",
+        " whisper.cpp 经 FetchContent 在 configure 阶段自动拉取 (需网络)",
+        " Vosk 从 third_party/vosk/ 手动加载 (预编译包)",
         "===================================================================="
     ],
-    "version": 3,
+    "version": 6,
     "configurePresets": [
         {
-            "name": "msvc-debug-all-vcpkg",
-            "displayName": "Windows x64 Debug (all vcpkg)",
-            "description": "全部 vcpkg 管理。需要 VCPKG_ROOT 环境变量。",
+            "name": "msvc-debug",
+            "displayName": "Windows x64 Debug",
             "generator": "Visual Studio 17 2022",
-            "binaryDir": "${sourceDir}/build/msvc-debug-all-vcpkg",
-            "toolchainFile": "$penv{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
-            "cacheVariables": {
-                "USE_VCPKG_QT": "ON",
-                "USE_VCPKG": "ON"
-            }
+            "binaryDir": "${sourceDir}/build/msvc-debug"
         },
         {
-            "name": "msvc-release-all-vcpkg",
-            "displayName": "Windows x64 Release (all vcpkg)",
-            "description": "全部 vcpkg 管理 — Release 优化构建",
+            "name": "msvc-release",
+            "displayName": "Windows x64 Release",
             "generator": "Visual Studio 17 2022",
-            "binaryDir": "${sourceDir}/build/msvc-release-all-vcpkg",
-            "toolchainFile": "$penv{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
-            "cacheVariables": {
-                "USE_VCPKG_QT": "ON",
-                "USE_VCPKG": "ON"
-            }
-        },
-        {
-            "name": "msvc-debug-all-manual",
-            "displayName": "Windows x64 Debug (all manual)",
-            "description": "官方 Qt + third_party 手动管理。需要 Qt6_DIR 环境变量。",
-            "generator": "Visual Studio 17 2022",
-            "binaryDir": "${sourceDir}/build/msvc-debug-all-manual",
-            "cacheVariables": {
-                "USE_VCPKG_QT": "OFF",
-                "USE_VCPKG": "OFF",
-                "CMAKE_PREFIX_PATH": "$penv{Qt6_DIR}"
-            }
-        },
-        {
-            "name": "msvc-release-all-manual",
-            "displayName": "Windows x64 Release (all manual)",
-            "description": "官方 Qt + third_party — Release 优化构建",
-            "generator": "Visual Studio 17 2022",
-            "binaryDir": "${sourceDir}/build/msvc-release-all-manual",
-            "cacheVariables": {
-                "USE_VCPKG_QT": "OFF",
-                "USE_VCPKG": "OFF",
-                "CMAKE_PREFIX_PATH": "$penv{Qt6_DIR}"
-            }
-        },
-        {
-            "name": "msvc-debug-qt-manual-whisper-vcpkg",
-            "displayName": "Windows x64 Debug (Qt manual + vcpkg libs)",
-            "description": "官方 Qt + vcpkg 的 whisper。需要 VCPKG_ROOT 和 Qt6_DIR。",
-            "generator": "Visual Studio 17 2022",
-            "binaryDir": "${sourceDir}/build/msvc-debug-qt-manual-whisper-vcpkg",
-            "toolchainFile": "$penv{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
-            "cacheVariables": {
-                "USE_VCPKG_QT": "OFF",
-                "USE_VCPKG": "ON",
-                "CMAKE_PREFIX_PATH": "$penv{Qt6_DIR}"
-            }
+            "binaryDir": "${sourceDir}/build/msvc-release"
         }
     ],
     "buildPresets": [
         {
-            "name": "debug-all-vcpkg",
-            "configurePreset": "msvc-debug-all-vcpkg",
+            "name": "debug",
+            "configurePreset": "msvc-debug",
             "configuration": "Debug"
         },
         {
-            "name": "release-all-vcpkg",
-            "configurePreset": "msvc-release-all-vcpkg",
+            "name": "release",
+            "configurePreset": "msvc-release",
             "configuration": "Release"
-        },
-        {
-            "name": "debug-all-manual",
-            "configurePreset": "msvc-debug-all-manual",
-            "configuration": "Debug"
-        },
-        {
-            "name": "release-all-manual",
-            "configurePreset": "msvc-release-all-manual",
-            "configuration": "Release"
-        },
-        {
-            "name": "debug-qt-manual-whisper-vcpkg",
-            "configurePreset": "msvc-debug-qt-manual-whisper-vcpkg",
-            "configuration": "Debug"
         }
     ]
 }
