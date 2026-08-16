@@ -35,7 +35,7 @@ include(FetchContent)
 # ==========================================
 # 3. Qt6 (MaintenanceTool 安装, 环境变量定位)
 # ==========================================
-find_package(Qt6 COMPONENTS Widgets Multimedia REQUIRED)
+find_package(Qt6 COMPONENTS Widgets Multimedia WebSockets REQUIRED)
 
 # ==========================================
 # 4. whisper.cpp (FetchContent — 静态链接, 无 DLL 部署负担)
@@ -227,4 +227,12 @@ enable_testing()
 option(BUILD_TESTS "Build unit tests" ON)
 if(BUILD_TESTS)
     add_subdirectory(tests)
+endif()
+
+# ==========================================
+# 13. 开发工具 (L2: 练习服务器 + CLI 联调客户端)
+# ==========================================
+option(KOTOCORD_BUILD_TOOLS "Build development tools (funasr dev server / client CLI)" ON)
+if(KOTOCORD_BUILD_TOOLS)
+    add_subdirectory(tools)
 endif()

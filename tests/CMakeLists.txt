@@ -58,6 +58,32 @@ add_test(NAME KaomojiTests COMMAND $<TARGET_FILE:test_kaomoji>)
 
 
 # ==========================================
+# Test 3: FunASRTranscriber — WebSocket 客户端 (mock 服务器)
+# ==========================================
+# 不依赖真实 FunASR 服务端: 测试内建 QWebSocketServer 录制消息并按用例回放
+add_executable(test_funasr
+    TestFunASRTranscriber.cpp
+    ../src/modules/input/FunASRTranscriber.cpp
+    ../src/modules/input/FunASRTranscriber.h
+    ../src/modules/input/FunASRSocketWorker.cpp
+    ../src/modules/input/FunASRSocketWorker.h
+    ../src/modules/input/IAudioTranscriber.h        # 为 MOC
+)
+
+target_include_directories(test_funasr PRIVATE
+    ${CMAKE_SOURCE_DIR}/src
+)
+
+target_link_libraries(test_funasr PRIVATE
+    Qt6::Test
+    Qt6::Core
+    Qt6::WebSockets
+)
+
+add_test(NAME FunASRTranscriberTests COMMAND $<TARGET_FILE:test_funasr>)
+
+
+# ==========================================
 # Test 0: Sanity — 验证 Qt Test 框架正常
 # ==========================================
 add_executable(test_sanity
@@ -72,11 +98,11 @@ target_link_libraries(test_sanity PRIVATE
 add_test(NAME SanityTest COMMAND $<TARGET_FILE:test_sanity>)
 
 # 确保测试可执行文件在 Windows 上使用控制台子系统
-set_target_properties(test_controller test_kaomoji test_sanity PROPERTIES
+set_target_properties(test_controller test_kaomoji test_sanity test_funasr PROPERTIES
     WIN32_EXECUTABLE FALSE
 )
 
 # Qt6 on Windows: 需要显式设置环境变量才能将输出发送到 stderr
-set_tests_properties(ControllerTests KaomojiTests SanityTest PROPERTIES
+set_tests_properties(ControllerTests KaomojiTests SanityTest FunASRTranscriberTests PROPERTIES
     ENVIRONMENT "QT_ASSUME_STDERR_HAS_CONSOLE=1"
 )
