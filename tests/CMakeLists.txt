@@ -84,6 +84,37 @@ add_test(NAME FunASRTranscriberTests COMMAND $<TARGET_FILE:test_funasr>)
 
 
 # ==========================================
+# Test 4: TTS — MockTTS 引擎与 AppController 集成 (Phase 3 L1)
+# ==========================================
+add_executable(test_tts
+    TestTTS.cpp
+    ../src/modules/tts/MockTTS.cpp
+    ../src/modules/tts/MockTTS.h
+    ../src/modules/tts/PythonEdgeTTS.cpp       # D9: T6 用例 (启动失败路径)
+    ../src/modules/tts/PythonEdgeTTS.h
+    ../src/modules/tts/ITextToSpeech.h         # 为 MOC
+    ../src/core/AppController.cpp
+    ../src/core/AppController.h
+    ../src/core/DataTypes.h
+    ../src/modules/llm/ILanguageModel.h        # 为 AppController 的 MOC
+    ../src/modules/llm/KaomojiManager.cpp
+    ../src/modules/llm/KaomojiManager.h
+)
+
+target_include_directories(test_tts PRIVATE
+    ${CMAKE_SOURCE_DIR}/src
+)
+
+target_link_libraries(test_tts PRIVATE
+    Qt6::Test
+    Qt6::Core
+    Qt6::Widgets
+)
+
+add_test(NAME TtsTests COMMAND $<TARGET_FILE:test_tts>)
+
+
+# ==========================================
 # Test 0: Sanity — 验证 Qt Test 框架正常
 # ==========================================
 add_executable(test_sanity
@@ -98,11 +129,11 @@ target_link_libraries(test_sanity PRIVATE
 add_test(NAME SanityTest COMMAND $<TARGET_FILE:test_sanity>)
 
 # 确保测试可执行文件在 Windows 上使用控制台子系统
-set_target_properties(test_controller test_kaomoji test_sanity test_funasr PROPERTIES
+set_target_properties(test_controller test_kaomoji test_sanity test_funasr test_tts PROPERTIES
     WIN32_EXECUTABLE FALSE
 )
 
 # Qt6 on Windows: 需要显式设置环境变量才能将输出发送到 stderr
-set_tests_properties(ControllerTests KaomojiTests SanityTest FunASRTranscriberTests PROPERTIES
+set_tests_properties(ControllerTests KaomojiTests SanityTest FunASRTranscriberTests TtsTests PROPERTIES
     ENVIRONMENT "QT_ASSUME_STDERR_HAS_CONSOLE=1"
 )

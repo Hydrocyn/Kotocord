@@ -116,6 +116,15 @@ set(MODULE_SOURCES
     src/modules/render/SubtitleRenderer.h
     src/modules/render/SubtitleRenderer.cpp
 
+    # TTS (Phase 3)
+    src/modules/tts/ITextToSpeech.h
+    src/modules/tts/MockTTS.h
+    src/modules/tts/MockTTS.cpp
+    src/modules/tts/TTSPlayer.h
+    src/modules/tts/TTSPlayer.cpp
+    src/modules/tts/PythonEdgeTTS.h      # D9: Python 侧车引擎 (产品引擎)
+    src/modules/tts/PythonEdgeTTS.cpp
+
     # System
     src/modules/system/SystemResourceMonitor.h
     src/modules/system/SystemResourceMonitor.cpp

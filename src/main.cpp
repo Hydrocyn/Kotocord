@@ -15,6 +15,8 @@
 #include "modules/llm/DeepSeekAPIWorker.h"
 #include "modules/llm/KaomojiManager.h"
 #include "modules/system/SystemResourceMonitor.h"
+#include "modules/tts/PythonEdgeTTS.h" // Phase 3: TTS 引擎 (D9 Python 侧车, 产品引擎)
+#include "modules/tts/TTSPlayer.h"     // Phase 3: 音频播放器
 
 int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
@@ -48,6 +50,8 @@ int main(int argc, char* argv[]) {
     AudioCapture micCapture;
     KaomojiManager kaomojiManager;
     SystemResourceMonitor sysMonitor;
+    PythonEdgeTTS pythonTts; // D9: TTS 产品引擎 (QProcess → venv edge-tts)
+    TTSPlayer ttsPlayer;     // Phase 3: 播放器
 
     // 尝试从 apikey.txt 加载 API Key
     QString apiKeyPath = AppPaths::getApiKeyFilePath();
@@ -72,6 +76,7 @@ int main(int argc, char* argv[]) {
     kaomojiManager.loadFromFile(AppPaths::getKaomojiPath());
     controller.setKaomojiManager(&kaomojiManager);
     controller.setLanguageModel(mockLLM.get()); // 默认使用 Mock LLM
+    controller.setTTS(&pythonTts); // Phase 3: 注入 TTS 引擎 (决策 D3/D4: 默认开启)
 
     // 类型安全的引擎选择: QString key 替代 bool flag
     //   "vosk"    → VoskTranscriber
@@ -111,7 +116,13 @@ int main(int argc, char* argv[]) {
     QObject::connect(whisperEngine.get(), &IAudioTranscriber::textReady,
                      &controller, &AppController::onASRTextReady);
 
-    // --- 5. UI → 控制器/底层 ---
+    // --- 5. TTS 引擎 → 播放器 (Phase 3) ---
+    QObject::connect(&pythonTts, &PythonEdgeTTS::audioReady,
+                     &ttsPlayer, &TTSPlayer::play);
+    QObject::connect(&pythonTts, &PythonEdgeTTS::error,
+                     [](const QString& msg) { qWarning() << msg; });
+
+    // --- 6. UI → 控制器/底层 ---
     // 切换 LLM
     QObject::connect(&window, &MainWindow::llmEngineSwitched, [&](bool isDeepSeek) {
         controller.setLanguageModel(

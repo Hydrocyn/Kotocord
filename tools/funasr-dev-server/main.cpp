@@ -3,6 +3,7 @@
 #include <QWebSocket>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QNetworkRequest>
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
@@ -115,6 +116,13 @@ private slots:
 		connect(socket, &QWebSocket::binaryMessageReceived,
 		        session, &Session::onBinaryReceived);
 		qInfo() << "[DevServer] 新客户端接入:" << socket->peerAddress().toString();
+		// 握手头捕获 — 观察任意 ws 客户端实际发送的头 (L2 诊断 + 协议学习窗口)
+		const QNetworkRequest req = socket->request();
+		qInfo() << "[DevServer] 握手头:";
+		const QList<QByteArray> headerNames = req.rawHeaderList();
+		for (const QByteArray& name : headerNames) {
+			qInfo() << "   " << name << ":" << req.rawHeader(name);
+		}
 	}
 
 private:

@@ -10,6 +10,7 @@
 #include "../modules/llm/KaomojiManager.h"
 
 class KaomojiManager;
+class ITextToSpeech;
 
 class AppController : public QObject {
     Q_OBJECT
@@ -19,6 +20,7 @@ public:
     void setLanguageModel(ILanguageModel* llm);//依赖注入：选择LLM
     void setLLMEnabled(bool enabled);
     void setKaomojiManager(KaomojiManager* manager);// 注入颜文字管理器的接口
+    void setTTS(ITextToSpeech* tts);// 注入 TTS 引擎 (nullable, 未注入时不发声) (Phase 3 决策 D3)
 
     // 测试辅助: 重置内部状态 (解锁屏幕, 清空队列, 停止定时器)
     void resetState();
@@ -38,6 +40,7 @@ private:
 	ILanguageModel* m_llm;
     bool m_llmEnabled; // 记录 LLM 开关状态
     KaomojiManager* m_kaomojiManager;
+	ITextToSpeech* m_tts = nullptr; // TTS 引擎 (nullable, Phase 3)
 	qint64 m_currentFrameId;
 
 	// --- 队列与锁控机制 ---

@@ -1,5 +1,6 @@
 ﻿#include "AppController.h"
 #include "../modules/llm/KaomojiManager.h"
+#include "../modules/tts/ITextToSpeech.h"
 #include <QDebug>
 
 AppController::AppController(QObject* parent)
@@ -29,6 +30,10 @@ void AppController::setLLMEnabled(bool enabled) {
 
 void AppController::setKaomojiManager(KaomojiManager* manager) {
 	m_kaomojiManager = manager;
+}
+
+void AppController::setTTS(ITextToSpeech* tts) {
+	m_tts = tts;
 }
 
 void AppController::resetState() {
@@ -102,6 +107,9 @@ void AppController::onLLMTextProcessed(const SubtitleFrame& frame) {
 	}
 	//qDebug() << "[AppController] 附魔完成，准备刷新屏幕:" << finalFrame.displayText;
 	emit subtitleReadyForRender(finalFrame);//发射渲染信号
+	if (m_tts) {
+		m_tts->synthesize(finalFrame.displayText);// Phase 3: LLM 处理后触发 TTS (决策 D3, 打断语义 D2)
+	}
 	m_unlockTimer.start(1500);//保留文本时间为1.5秒，再处理下一句
 }
 
